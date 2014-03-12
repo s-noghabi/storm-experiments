@@ -9,7 +9,7 @@ PLOT_DIR="./plots/"
 def parse():
     times = {}
     for fname in os.listdir(LOG_DIR):
-        if "machines" not in fname:
+        if "load" not in fname:
             continue
 
         times[fname] = {}
@@ -25,7 +25,7 @@ def parse():
                 host = _line[4]
                 task_name = _line[5].split(':')[0]
                 bolt_name = _line[5].split(':')[1]
-                num_tuples = _line[2]
+                num_tuples = _line[7]
 
                 if bolt_name not in times[fname]:
                     times[fname][bolt_name] = {}
@@ -38,25 +38,25 @@ def parse():
 
 def plot(times):
     fig, ax = plt.subplots()
-    width = 0.35
+    width = 0.5
     N = len(times)
     ind = np.arange(N)
     fname_index = 0
     num_output_bolts = 0
     count = 0
+    file_labels = [_[:-len("_load")] for _ in times.keys()]
 
     for fname, fname_times in times.items():
         means = []
         stds = []
 
-        if "machines" not in fname:
+        if "load" not in fname:
             continue
 
         for bolt_name, bolt_times in fname_times.items():
             time_series = []
             for task_name, task_times in bolt_times.items():
-                time_series.extend([float(second) - float(first) for first, second in \
-                    zip(task_times[:-1], task_times[1:])])
+                time_series.extend([float(_) for _ in task_times])
 
             means.append(np.average(time_series))
             stds.append(np.std(time_series))
@@ -65,16 +65,17 @@ def plot(times):
         # ax.bar(bar_step, means, width, color='r', yerr=stds)
         ax.bar(bar_step, means, width, color='r')
 
-        count += (len(fname_times)+ 1) * width
+        count += (len(fname_times) + 1) * width
         num_output_bolts = len(fname_times)
 
     ax.set_ylabel('Throughput')
     ax.set_xlabel('Output bolts')
 
     # Label the step in x-axis
-    name_step = np.array([((num_output_bolts + 1) * i + num_output_bolts/2) * width for i in range(len(os.listdir(LOG_DIR)))])
+    name_step = np.array([((num_output_bolts + 1) * i + num_output_bolts/2) * width \
+        for i in range(len(file_labels))])
     ax.set_xticks(name_step)
-    ax.set_xticklabels([fname for fname in os.listdir(LOG_DIR) if "machines" in fname])
+    ax.set_xticklabels(file_labels)
 
     plt.grid()
     plt.savefig(PLOT_DIR + 'load.png', format='png')
