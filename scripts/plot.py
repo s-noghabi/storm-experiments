@@ -133,17 +133,17 @@ def plot_line(times):
 
             for task_name, task_times in bolt_times.items():
                 for time, num_tuples in task_times.items():
-                    time_series[time - min_time] = float(num_tuples)/float(fname.split('_')[0])
+                    time_series[time - min_time] = float(num_tuples)
 
-            x_axis = [float(_.microseconds)/1000000 + float(_.seconds) for _ in sorted(time_series.keys())]
+            x_axis = [(float(_.microseconds)/1000000 + float(_.seconds))/60 for _ in sorted(time_series.keys())]
             y_axis = [time_series[_] for _ in sorted(time_series.keys())]
             plt.plot(x_axis, y_axis)
 
     ax.set_ylabel('Throughput')
-    ax.set_xlabel('Time(minutes)')
+    ax.set_xlabel('Time (minutes)')
 
     plt.grid()
-    plt.savefig(PLOT_DIR + 'scale_in.png', format='png')
+    plt.savefig(PLOT_DIR + 'migration_2.png', format='png')
 
 if __name__ == '__main__':
     times = parse_line()
