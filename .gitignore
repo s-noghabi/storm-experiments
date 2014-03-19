@@ -6,6 +6,9 @@ lib/
 *.jar
 .lein-deps-sum
 
+# Storm generated files
+storm-local/
+
 # Eclipse files
 .settings/
 target/
