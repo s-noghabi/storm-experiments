@@ -36,6 +36,9 @@ public class TestTopology {
 	@Option(name = "--numTask", usage = "Number of tasks per bolt")
 	private static int _numTask = 3;
 
+    @Option(name = "--numWorker", usage = "Number of workers in Storm")
+    private static int _numWorker = 3;
+
 	public void run() throws Exception {
 		TopologyBuilder builder = new TopologyBuilder();
 
@@ -89,9 +92,9 @@ public class TestTopology {
 		}
 
 		Config conf = new Config();
-		conf.setDebug(true);
-		conf.setNumWorkers(_numTask);
-		conf.registerMetricsConsumer(LoggingMetricsConsumer.class, 2);
+		conf.setDebug(false);
+		conf.setNumWorkers(_numWorker);
+		conf.registerMetricsConsumer(LoggingMetricsConsumer.class, _numWorker);
 
 		StormSubmitter.submitTopology(topologyName, conf,
 				builder.createTopology());
