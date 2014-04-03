@@ -12,3 +12,5 @@ storm-local/
 # Eclipse files
 .settings/
 target/
+
+topology.txt
