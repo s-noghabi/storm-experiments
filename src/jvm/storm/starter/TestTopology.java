@@ -41,10 +41,10 @@ public class TestTopology {
     @Option(name = "--numWorker", usage = "Number of workers in Storm")
     private static int _numWorker = 3;
 
-    private final String OUTPUT = "./topology.txt";
+    private final String TOPOLOGY_FILE = "./topology.txt";
 
     public void run() throws Exception {
-        PrintWriter writer = new PrintWriter(OUTPUT, "UTF-8");
+        PrintWriter writer = new PrintWriter(TOPOLOGY_FILE, "UTF-8");
 
         TopologyBuilder builder = new TopologyBuilder();
 
@@ -121,5 +121,6 @@ public class TestTopology {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
     }
 }
