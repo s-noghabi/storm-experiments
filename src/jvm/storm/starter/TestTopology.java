@@ -44,9 +44,10 @@ public class TestTopology {
     private final String TOPOLOGY_FILE = "./topology.txt";
 
     public void run() throws Exception {
+        TopologyBuilder builder = new TopologyBuilder();
         PrintWriter writer = new PrintWriter(TOPOLOGY_FILE, "UTF-8");
 
-        TopologyBuilder builder = new TopologyBuilder();
+        writer.println(topologyName);
 
         /* Setting up spouts */
         for (int i = 0; i < _numSpout; i++) {
