@@ -8,6 +8,7 @@ import org.kohsuke.args4j.Option;
 import storm.starter.bolt.TestBolt;
 import storm.starter.spout.TestSpout;
 import backtype.storm.Config;
+import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.metric.LoggingMetricsConsumer;
 import backtype.storm.topology.BoltDeclarer;
@@ -41,13 +42,15 @@ public class TestTopology {
     @Option(name = "--numWorker", usage = "Number of workers in Storm")
     private static int _numWorker = 3;
 
-    private final String TOPOLOGY_FILE = "./topology.txt";
+    @Option(name = "--local", usage = "Do you want to run it locally?")
+    private static boolean _local = false;
+
+    private final String TOPOLOGY_DIR = "./topologies/";
 
     public void run() throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
-        PrintWriter writer = new PrintWriter(TOPOLOGY_FILE, "UTF-8");
-
-        writer.println(topologyName);
+        PrintWriter writer = new PrintWriter(TOPOLOGY_DIR + topologyName,
+            "UTF-8");
 
         /* Setting up spouts */
         for (int i = 0; i < _numSpout; i++) {
@@ -108,8 +111,14 @@ public class TestTopology {
         conf.setNumWorkers(_numWorker);
         conf.registerMetricsConsumer(LoggingMetricsConsumer.class, _numWorker);
 
-        StormSubmitter.submitTopology(topologyName, conf,
-            builder.createTopology());
+        if (_local) {
+            LocalCluster cluster = new LocalCluster();
+            cluster
+                .submitTopology(topologyName, conf, builder.createTopology());
+        } else {
+            StormSubmitter.submitTopology(topologyName, conf,
+                builder.createTopology());
+        }
     }
 
     public static void main(String[] args) throws Exception {
