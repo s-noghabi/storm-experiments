@@ -31,12 +31,12 @@ public class TestBolt extends BaseRichBolt {
         if (_inputOutputRatio > 1) {
             for (int i = 0; i < _inputOutputRatio; i++) {
                 _collector.emit(new Values(word));
-                _collector.ack(tuple);
+                // _collector.ack(tuple);
             }
         } else {
             if (Math.random() < _inputOutputRatio) {
                 _collector.emit(new Values(word));
-                _collector.ack(tuple);
+                // _collector.ack(tuple);
             }
         }
 

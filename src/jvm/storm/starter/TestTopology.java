@@ -10,7 +10,6 @@ import storm.starter.spout.TestSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
-import backtype.storm.metric.LoggingMetricsConsumer;
 import backtype.storm.topology.BoltDeclarer;
 import backtype.storm.topology.TopologyBuilder;
 
@@ -109,7 +108,6 @@ public class TestTopology {
         Config conf = new Config();
         conf.setDebug(false);
         conf.setNumWorkers(_numWorker);
-        conf.registerMetricsConsumer(LoggingMetricsConsumer.class, _numWorker);
 
         if (_local) {
             LocalCluster cluster = new LocalCluster();
