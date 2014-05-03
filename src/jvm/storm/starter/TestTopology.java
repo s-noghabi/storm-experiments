@@ -8,14 +8,16 @@ import org.kohsuke.args4j.Option;
 import storm.starter.bolt.TestBolt;
 import storm.starter.spout.TestSpout;
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
+import backtype.storm.metric.LoggingMetricsConsumer;
 import backtype.storm.topology.BoltDeclarer;
 import backtype.storm.topology.TopologyBuilder;
 
+import backtype.storm.LocalCluster;
+
 public class TestTopology {
     @Option(name = "--name", usage = "Name for the topology")
-    private static String topologyName = "TestTopology";
+    private static String topologyName = ""; // "TestTopology";
 
     @Option(name = "--numSpout", usage = "Number of spouts in the topology")
     private static int _numSpout = 1;
@@ -41,15 +43,12 @@ public class TestTopology {
     @Option(name = "--numWorker", usage = "Number of workers in Storm")
     private static int _numWorker = 3;
 
-    @Option(name = "--local", usage = "Do you want to run it locally?")
-    private static boolean _local = false;
-
-    private final String TOPOLOGY_DIR = "./topologies/";
+    private final String TOPOLOGY_FILE = "./topology.txt";
 
     public void run() throws Exception {
+        PrintWriter writer = new PrintWriter(TOPOLOGY_FILE, "UTF-8");
+
         TopologyBuilder builder = new TopologyBuilder();
-        PrintWriter writer = new PrintWriter(TOPOLOGY_DIR + topologyName,
-            "UTF-8");
 
         /* Setting up spouts */
         for (int i = 0; i < _numSpout; i++) {
@@ -108,14 +107,19 @@ public class TestTopology {
         Config conf = new Config();
         conf.setDebug(false);
         conf.setNumWorkers(_numWorker);
+        conf.registerMetricsConsumer(LoggingMetricsConsumer.class, _numWorker);
 
-        if (_local) {
-            LocalCluster cluster = new LocalCluster();
-            cluster
-                .submitTopology(topologyName, conf, builder.createTopology());
-        } else {
+        if (!topologyName.equals("")) {
             StormSubmitter.submitTopology(topologyName, conf,
                 builder.createTopology());
+        }
+        else {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("TestTopology", conf, 
+                builder.createTopology());
+            
+            Thread.sleep(10000);
+            cluster.shutdown();
         }
     }
 
@@ -129,6 +133,5 @@ public class TestTopology {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
     }
 }

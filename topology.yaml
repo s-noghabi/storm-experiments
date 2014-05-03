@@ -1,0 +1,13 @@
+---
+numWorkers: 3
+topologyName: testTop10
+elements:
+  spout:
+    tasks: 3
+    executeLatency: 1
+  split:
+    tasks: 12
+    executeLatency: 2
+  count:
+    tasks: 8
+    executeLatency: 1
