@@ -19,7 +19,8 @@ public class LinTopology {
 
         for( int i=1; i<config.getNumTasks().length; i++) {
             String dst_id=config.getNames()[i];
-            builder.setBolt(dst_id, new RandomBolt(config.getExecLatencies()[i]), config.getNumTasks()[i]).shuffleGrouping("spout");
+            builder.setBolt(dst_id, new RandomBolt(config.getExecLatencies()[i]), config.getNumTasks()[i]).shuffleGrouping(src_id);
+	    src_id= dst_id;
 //            builder.setBolt("count", new RandomBolt(1), 12).fieldsGrouping("split", new Fields("word"));
         }
         Config conf = new Config();
