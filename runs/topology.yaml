@@ -1,0 +1,13 @@
+---
+numWorkers: 1
+topologyName: testT
+elements:
+  spout:
+    tasks: 3
+    executeLatency: 1
+  split:
+    tasks: 12
+    executeLatency: 1
+  count:
+    tasks: 8
+    executeLatency: 1

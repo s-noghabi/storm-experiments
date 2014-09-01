@@ -15,4 +15,4 @@ target/
 
 topology.txt
 .idea/*
-runs/*
+runs/*/
